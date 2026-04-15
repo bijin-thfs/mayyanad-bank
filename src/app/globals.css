@@ -1,26 +1,142 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Primary - Deep Navy (Foundation of Trust) */
+  --color-primary: #001833;
+  --color-primary-container: #002d56;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #7596c4;
+  --color-primary-fixed: #d4e3ff;
+  --color-primary-fixed-dim: #a7c8fa;
+  --color-on-primary-fixed: #001c39;
+  --color-on-primary-fixed-variant: #254872;
+  --color-inverse-primary: #a7c8fa;
+
+  /* Secondary - Heritage Gold */
+  --color-secondary: #775a19;
+  --color-secondary-container: #fed488;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #785a1a;
+  --color-secondary-fixed: #ffdea5;
+  --color-secondary-fixed-dim: #e9c176;
+  --color-on-secondary-fixed: #261900;
+  --color-on-secondary-fixed-variant: #5d4201;
+
+  /* Tertiary - Warm Earth */
+  --color-tertiary: #2c0f00;
+  --color-tertiary-container: #4c1f00;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #c8835a;
+  --color-tertiary-fixed: #ffdbc9;
+  --color-tertiary-fixed-dim: #ffb68c;
+  --color-on-tertiary-fixed: #321200;
+  --color-on-tertiary-fixed-variant: #6d3916;
+
+  /* Surfaces */
+  --color-surface: #f8f9fa;
+  --color-surface-dim: #d9dadb;
+  --color-surface-bright: #f8f9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container: #edeeef;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+  --color-surface-variant: #e1e3e4;
+  --color-surface-tint: #3f608b;
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #43474e;
+  --color-on-background: #191c1d;
+  --color-background: #f8f9fa;
+  --color-inverse-surface: #2e3132;
+  --color-inverse-on-surface: #f0f1f2;
+
+  /* Outline */
+  --color-outline: #73777f;
+  --color-outline-variant: #c3c6d0;
+
+  /* Error */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  /* Typography */
+  --font-headline: "Manrope", sans-serif;
+  --font-body: "Inter", sans-serif;
+  --font-label: "Inter", sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Material Symbols */
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+}
+
+/* Bilingual Malayalam text scaling */
+.malayalam-text {
+  line-height: 1.6;
+  font-size: 1.1em;
+}
+
+/* Glass effect for navigation */
+.glass-effect {
+  background: rgba(248, 249, 250, 0.8);
+  backdrop-filter: blur(20px);
+}
+
+/* Heritage gradient for primary CTAs */
+.heritage-gradient {
+  background: linear-gradient(135deg, #001833 0%, #002d56 100%);
+}
+
+/* Selection color */
+::selection {
+  background-color: var(--color-secondary-container);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+}
+
+/* Fade-in animation for step transitions */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Success page sparkle particles */
+@keyframes sparkle {
+  0% {
+    opacity: 1;
+    transform: rotate(var(--tw-rotate, 0deg)) translateY(-30px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--tw-rotate, 0deg)) translateY(-70px) scale(0);
+  }
+}
+
+/* Checkmark draw animation */
+@keyframes checkDraw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -1,0 +1,26 @@
+{
+  "name": "Mayyanad Regional Co-operative Bank",
+  "short_name": "MRCB",
+  "description": "മയ്യനാട് റീജിയണൽ സർവീസ് സഹകരണ ബാങ്ക് - Digital Banking",
+  "id": "/",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f8f9fa",
+  "theme_color": "#001833",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
