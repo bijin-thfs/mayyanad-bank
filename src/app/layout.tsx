@@ -45,7 +45,9 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
-        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-16.png" />
       </head>
       <body className="min-h-dvh flex flex-col font-body antialiased">
         {children}
