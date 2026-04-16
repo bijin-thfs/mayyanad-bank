@@ -1,0 +1,5 @@
+- [MRCB Banking App Overview](project_overview.md) — Bilingual Next.js 16 PWA for Mayyanad Regional Co-operative Bank
+- [Deployment Setup](project_deployment.md) — Vercel + GitHub auto-deploy, live at mayyanad-bank-bijins-projects.vercel.app
+- [User Profile](user_profile.md) — Bijin B James, PaisaOnClick, GitHub bijin-thfs
+- [Project Status](project_status.md) — Login, accounts, settings built; no backend yet, OTP is simulated
+- [Commit Workflow](feedback_commit_workflow.md) — User prefers atomic commits with immediate push after each change
