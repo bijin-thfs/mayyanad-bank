@@ -149,7 +149,7 @@ export default function LoginPage() {
               Secure Access
             </div>
             <h2 className="font-headline font-extrabold text-3xl text-primary">
-              Welcome Back
+              Welcome
             </h2>
             <p className="text-outline malayalam-text">
               ലോഗിൻ ചെയ്യാൻ നിങ്ങളുടെ മൊബൈൽ നമ്പർ നൽകുക.
