@@ -126,15 +126,18 @@ export default function LoginPage() {
         <div className="w-full max-w-md space-y-10">
           {/* Mobile Branding */}
           <div className="lg:hidden flex flex-col items-center mb-8">
-            <Image
-              src="/mrcb-logo.png"
-              alt="MRCB Logo"
-              width={64}
-              height={64}
-              className="mb-4 rounded-xl"
-            />
+            <div className="w-full overflow-hidden mb-5">
+              <Image
+                src="/mrcb-hero.jpg"
+                alt="Mayyanad Regional Co-operative Bank"
+                width={600}
+                height={300}
+                className="w-full h-auto object-cover"
+                priority
+              />
+            </div>
             <h2 className="font-headline font-bold text-xl text-primary text-center">
-              Mayyanad Regional Co-operative Bank
+              The Mayyanad Regional Co-operative Bank
             </h2>
           </div>
 
