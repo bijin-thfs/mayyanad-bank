@@ -139,15 +139,6 @@ export default function LoginPage() {
           </div>
 
           <header className="space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary-container text-on-secondary-container text-xs font-bold tracking-widest uppercase mb-4">
-              <span
-                className="material-symbols-outlined text-sm"
-                style={{ fontVariationSettings: "'FILL' 1" }}
-              >
-                lock
-              </span>
-              Secure Access
-            </div>
             <h2 className="font-headline font-extrabold text-3xl text-primary">
               Welcome
             </h2>
