@@ -42,9 +42,9 @@ src/
 │   ├── accounts/
 │   │   ├── page.tsx                      # Account selection (Savings, Current, FD, RD cards)
 │   │   └── savings/
-│   │       ├── page.tsx                  # 5-step savings account form
+│   │       ├── page.tsx                  # 5-step savings account form (LIVE — submits to Supabase)
 │   │       └── success/
-│   │           └── page.tsx              # Animated success page after submission
+│   │           └── page.tsx              # Animated success page (reads ref number from ?ref= param)
 │   └── settings/
 │       └── page.tsx                      # User settings (language, security, notifications, accessibility)
 ├── components/
@@ -88,9 +88,11 @@ public/
   5. Review & Submit — read-only summary cards with Edit buttons per section, confirmation note
 - Progress indicator: CSS grid with circles + connector lines + labels
 - Form state persists across steps
-- Submit navigates to `/accounts/savings/success`
+- **Submit is LIVE** — inserts into Supabase: `customers` → `applications` → uploads to `kyc-documents` Storage → `application_documents` → `activity_log`
+- Generates reference number `MRCB-{timestamp}`, navigates to success page with `?ref=` param
 
 ### Success Page (`/accounts/savings/success`)
+- Reads reference number from `?ref=` URL param (falls back to generated one)
 - Staged animation (5 phases over 2.2s): ring draw → circle scale → checkmark + sparkles → title fade → cards fade
 - Reference number, status card, 4-step timeline, Share/Save buttons
 - Respects `prefers-reduced-motion`
