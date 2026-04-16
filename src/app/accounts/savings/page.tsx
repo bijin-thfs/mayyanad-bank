@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/Header";
 import BottomNav from "@/components/BottomNav";
 import SideNav from "@/components/SideNav";
+import { createClient } from "@/lib/supabase";
 
 const steps = [
   { id: 1, label: "Personal", fullLabel: "Personal Details", malayalam: "വ്യക്തിഗത വിവരങ്ങൾ" },
@@ -49,10 +50,116 @@ export default function SavingsAccountForm() {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+
   const nextStep = () => setCurrentStep((s) => Math.min(s + 1, 5));
   const prevStep = () => setCurrentStep((s) => Math.max(s - 1, 1));
-  const handleSubmit = () => {
-    router.push("/accounts/savings/success");
+
+  const handleSubmit = async () => {
+    setSubmitting(true);
+    setSubmitError("");
+
+    try {
+      const supabase = createClient();
+      const refNumber = `MRCB-${Date.now().toString().slice(-8)}`;
+
+      // 1. Insert customer
+      const { data: customer, error: custErr } = await supabase
+        .from("customers")
+        .insert({
+          full_name: form.fullName,
+          date_of_birth: form.dateOfBirth || null,
+          gender: form.gender || null,
+          father_spouse_name: form.fatherOrSpouseName || null,
+          mobile: form.mobileNumber,
+          email: form.email || null,
+          occupation: form.occupation || null,
+          annual_income: form.annualIncome || null,
+          address_line1: form.addressLine1 || null,
+          address_line2: form.addressLine2 || null,
+          city: form.city || null,
+          district: form.district || null,
+          state: form.state,
+          pincode: form.pincode || null,
+          aadhaar_number: form.aadhaarNumber || null,
+          pan_number: form.panNumber || null,
+        })
+        .select("id")
+        .single();
+
+      if (custErr) throw new Error(`Customer: ${custErr.message}`);
+
+      // 2. Insert application
+      const { data: application, error: appErr } = await supabase
+        .from("applications")
+        .insert({
+          reference_number: refNumber,
+          customer_id: customer.id,
+          account_type: "savings",
+          status: "new",
+          source: "online_portal",
+          account_variant: form.accountVariant,
+          cheque_book: form.chequeBook,
+          initial_deposit: form.initialDeposit ? Number(form.initialDeposit) : 0,
+          nominee_name: form.nomineeFullName || null,
+          nominee_relationship: form.nomineeRelationship || null,
+          vkyc_status: form.vkycStatus || "not_started",
+        })
+        .select("id")
+        .single();
+
+      if (appErr) throw new Error(`Application: ${appErr.message}`);
+
+      // 3. Upload documents to Storage + insert records
+      const docs: { file: File | null; type: string }[] = [
+        { file: form.photo, type: "photo" },
+        { file: form.aadhaarFile, type: "aadhaar" },
+        { file: form.panFile, type: "pan" },
+      ];
+
+      for (const doc of docs) {
+        if (!doc.file) continue;
+        const ext = doc.file.name.split(".").pop() || "jpg";
+        const storagePath = `${application.id}/${doc.type}.${ext}`;
+
+        const { error: uploadErr } = await supabase.storage
+          .from("kyc-documents")
+          .upload(storagePath, doc.file, { upsert: true });
+
+        if (uploadErr) {
+          console.error(`Upload ${doc.type}:`, uploadErr.message);
+          continue;
+        }
+
+        const { error: docErr } = await supabase.from("application_documents").insert({
+          application_id: application.id,
+          doc_type: doc.type,
+          file_path: storagePath,
+        });
+        if (docErr) console.error(`Doc record ${doc.type}:`, docErr.message);
+      }
+
+      // 4. Log activity
+      await supabase.from("activity_log").insert({
+        action: "application_submitted",
+        entity_type: "application",
+        entity_id: application.id,
+        details: {
+          customer_name: form.fullName,
+          account_type: "savings",
+          reference_number: refNumber,
+        },
+      });
+
+      // 5. Navigate to success
+      router.push(`/accounts/savings/success?ref=${refNumber}`);
+    } catch (err) {
+      setSubmitError(
+        err instanceof Error ? err.message : "Something went wrong"
+      );
+      setSubmitting(false);
+    }
   };
 
   const progress = (currentStep / steps.length) * 100;
@@ -616,13 +723,34 @@ export default function SavingsAccountForm() {
             ) : (
               <button
                 onClick={handleSubmit}
-                className="flex items-center gap-2 px-10 py-4 rounded-xl bg-secondary text-on-secondary font-bold text-sm shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all min-h-[52px]"
+                disabled={submitting}
+                className="flex items-center gap-2 px-10 py-4 rounded-xl bg-secondary text-on-secondary font-bold text-sm shadow-lg shadow-secondary/20 hover:scale-[1.02] active:scale-95 transition-all min-h-[52px] disabled:opacity-60 disabled:pointer-events-none"
               >
-                Submit Application
-                <span className="material-symbols-outlined text-lg">check</span>
+                {submitting ? (
+                  <>
+                    <span className="material-symbols-outlined text-lg animate-spin">progress_activity</span>
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    Submit Application
+                    <span className="material-symbols-outlined text-lg">check</span>
+                  </>
+                )}
               </button>
             )}
           </div>
+
+          {/* Error message */}
+          {submitError && (
+            <div className="mt-4 p-4 bg-error-container/20 rounded-xl flex items-start gap-3 animate-[fadeIn_0.3s_ease-out]">
+              <span className="material-symbols-outlined text-error text-xl mt-0.5">error</span>
+              <div>
+                <p className="text-sm font-medium text-error">{submitError}</p>
+                <p className="text-xs text-error/70 malayalam-text mt-1">അപേക്ഷ സമർപ്പിക്കുന്നതിൽ പിശക് സംഭവിച്ചു. വീണ്ടും ശ്രമിക്കുക.</p>
+              </div>
+            </div>
+          )}
 
           {/* Step info */}
           <p className="text-center text-xs text-outline mt-4">

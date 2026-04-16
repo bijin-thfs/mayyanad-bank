@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function SuccessPage() {
+  const searchParams = useSearchParams();
+  const refNumber = searchParams.get("ref") || `MRCB-${Date.now().toString().slice(-8)}`;
   const [stage, setStage] = useState(0);
 
   useEffect(() => {
@@ -112,7 +115,7 @@ export default function SuccessPage() {
               <p className="text-xs text-outline malayalam-text">റഫറൻസ് നമ്പർ</p>
             </div>
             <p className="font-headline font-extrabold text-lg text-primary tracking-wide">
-              MRCB-{Date.now().toString().slice(-8)}
+              {refNumber}
             </p>
           </div>
 
